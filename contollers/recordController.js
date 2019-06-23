@@ -6,7 +6,6 @@ const dateFormat = 'YYYY-MM-DD';
 
 module.exports.getRecords = function(req, res, next) {
   var sr = new ServiceResult();
-  console.log('req.body', req.body);
   var dateCriteria = {};
   var countCriteria = {};
   var aggregation = [];
@@ -38,9 +37,7 @@ module.exports.getRecords = function(req, res, next) {
                 }
             }
         });
-    
-        console.log("dateCriteria", dateCriteria);
-    
+        
         if ( typeof req.body.minCount !== "undefined" || typeof req.body.maxCount !== "undefined" ) {
             countCriteria.$match = { totalCount: {}};
           if (typeof req.body.minCount !== "undefined") {
@@ -49,7 +46,6 @@ module.exports.getRecords = function(req, res, next) {
           if (typeof req.body.maxCount !== "undefined") {
             countCriteria.$match.totalCount.$lte = req.body.maxCount;
           }
-          console.log(countCriteria);
           aggregation.push(countCriteria);
         }
         aggregation.push({ 
@@ -64,7 +60,6 @@ module.exports.getRecords = function(req, res, next) {
                 sr.records = results;
                 res.json(sr);
         }).catch(err => {
-            console.log(err);
             sr.code = ServiceResult.ERROR_SYSTEM;
             sr.msg = err;
         });
@@ -73,7 +68,6 @@ module.exports.getRecords = function(req, res, next) {
       }
     
   } catch (error) {
-      console.log(error);
       sr.code = ServiceResult.ERROR_SYSTEM;
       sr.msg = 'Unexpected Error';
       res.status(503).json(sr);
